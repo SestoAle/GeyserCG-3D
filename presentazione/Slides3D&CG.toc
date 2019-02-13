@@ -1,6 +1,0 @@
-\beamer@endinputifotherversion {3.36pt}
-\select@language {italian}
-\select@language {italian}
-\beamer@sectionintoc {1}{Introduction}{3}{0}{1}
-\beamer@sectionintoc {2}{Scene}{6}{0}{2}
-\beamer@sectionintoc {3}{Physics}{10}{0}{3}
