@@ -15,13 +15,123 @@ The idea is to simulate the physics of water and steam particles:
 The physics of the particles system is done thorough **shaders programming** with WebGL.
 
 The project is developed by [Alessandro Sestini](https://github.com/SestoAle) and [Francesco Lombardi](https://github.com/fralomba)
+## Shaders
+There are two kinds of **vertex shaders**: 
+* one is for water particles;
+* one is for steam particles;
+
+The ```vertex_water``` is responsible to move the water particle, following:
+
+```javascript
+<script type="x-shader/x-vertex" id="vertex_water_particles">
+			
+  attribute vec3 movements;
+  uniform float t;
+  uniform float pointDim;
+  uniform float limitXZ;
+
+  void main()
+  {	
+
+    float theta = movements.y;
+    float v0r = movements.x;
+    float v0y = movements.z;
+
+    float v0x = v0r*cos(theta);
+    float v0z = v0r*sin(theta);
+
+    vec3 p = position;				
+
+    p.x += v0x*t;
+    p.y += -0.5*9.8*80.0*t*t+v0y*t;
+    p.z += v0z*t;
+
+    if(p.y < -1.0 || abs(p.x) > limitXZ || abs(p.z) > limitXZ){
+      p.x = -0.1;
+      p.y = -0.1;
+      p.z = -0.1;
+    } 
+
+    vec4 mvPosition = modelViewMatrix * vec4( p, 1.0 );
+    gl_PointSize = pointDim * ( 300.0 / -mvPosition.z );
+    gl_Position = projectionMatrix * mvPosition;
+  }
+
+</script>
+```
+
+Instead, the ```vertex_steam```moves the steam particles:
+```javascript
+<script type="x-shader/x-vertex" id="vertex_steam_particles">
+			
+  attribute vec3 movements;
+  uniform float pointDim;
+  uniform float t;
+  uniform float limitXZ;
+
+  void main()
+  {	
+
+    float omega = movements.x;
+    float v0r = movements.y;
+    float v0y = movements.z;
+
+    vec3 p = position;				
+
+    p.x += v0r*t*cos(omega);
+    p.y += (v0y*t);
+    p.z += v0r*t*sin(omega);
+
+    if(abs(p.x) > limitXZ || abs(p.z) > limitXZ || p.y > 1200.0){
+      p.x = -0.1;
+      p.y = -0.1;
+      p.z = -0.1;
+    } 
+
+    vec4 mvPosition = modelViewMatrix * vec4( p, 1.0 );
+    gl_PointSize = pointDim * ( 300.0 / -mvPosition.z );
+    gl_Position = projectionMatrix * mvPosition;
+  }
+
+</script>
+```
+
+The fragment shader is shared between the two types of particles:
+
+```javascript
+<script type="x-shader/x-fragment" id="fragment_particles">
+			
+  uniform sampler2D texture_sampler;
+  uniform float opacity;
+
+
+  void main()
+  {	
+
+    if(opacity == 0.0){
+      discard;		
+    } else {
+      gl_FragColor = texture2D(texture_sampler, gl_PointCoord);
+      if(gl_FragColor.a < 0.5){
+        discard;
+      }
+      gl_FragColor.a = opacity;	
+    }
+
+  }		
+
+</script>
+```
+
+All the shaders are defined inside the ```index.html```file.
+
 ## Scene 
 
 <p align="center">
 <img  src="https://media.giphy.com/media/2wZYqyvqyeYZU3RCBX/giphy.gif" width="95%" height="95%"/>
 </p>
 
-An interactable example is reachable [here](https://sestoale.github.io/GeyserCG-3D/).
+The whole scene is set-up using Three.js; an interactable example is reachable [here](https://sestoale.github.io/GeyserCG-3D/).
 
 Some controls have been implemented in order to let the users be able to customize their experience; an example is shown here:
 
