@@ -7,7 +7,7 @@
 The project aims to realize the geyser’s natural phenomenon caused by a water explosion through **WebGL** and **Three.js**
 technologies.
 
-The idea is to simulate the physics of water and steam particles:
+The idea was to simulate the physics of water and steam particles:
 * description of the motion of water particles following a parabolic trajectory;
 * description of the randomic motion of steam particles in 3D space;
 * creation of a pseudo-realistic scene.
