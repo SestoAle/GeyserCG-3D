@@ -20,7 +20,7 @@ There are two kinds of **vertex shaders**:
 * one is for water particles;
 * one is for steam particles;
 
-The ```vertex_water``` is responsible to move the water particle, following:
+The ```vertex_water``` is responsible of moving the water particle, following:
 
 ```javascript
 <script type="x-shader/x-vertex" id="vertex_water_particles">
